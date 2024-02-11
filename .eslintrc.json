@@ -224,7 +224,6 @@
   "overrides": [
     {
       "files": [
-        "site/src/**/*.tsx",
         "src/resources/**/*.ts"
       ],
       "rules": {
@@ -234,7 +233,6 @@
     },
     {
       "files": [
-        "site/src/**/*.tsx",
         "src/resources/**/*.ts"
       ],
       "rules": {

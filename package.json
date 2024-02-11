@@ -1,5 +1,5 @@
 {
-  "name": "blog",
+  "name": "cdk-pipeline-ecs-hosted-nextjs",
   "scripts": {
     "build": "npx projen build",
     "bundle": "npx projen bundle",
