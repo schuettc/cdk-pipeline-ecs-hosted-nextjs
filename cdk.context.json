@@ -1,0 +1,14 @@
+{
+  "availability-zones:account=104621577074:region=us-east-1": [
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ],
+  "hosted-zone:account=104621577074:domainName=schuettc.dev:region=us-east-1": {
+    "Id": "/hostedzone/Z06995913I60N5DN7SFUD",
+    "Name": "schuettc.dev."
+  }
+}
