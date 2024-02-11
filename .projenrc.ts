@@ -6,12 +6,12 @@ const AUTOMATION_TOKEN = 'PROJEN_GITHUB_TOKEN';
 const project = new awscdk.AwsCdkTypeScriptApp({
   cdkVersion: '2.126.0',
   defaultReleaseBranch: 'main',
-  name: 'blog',
-  appEntrypoint: 'pipeline.ts',
+  name: 'cdk-pipeline-ecs-hosted-nextjs',
+  appEntrypoint: 'cdk-pipeline-ecs-hosted-nextjs.ts',
   license: 'MIT-0',
   author: 'Court Schuett',
-  copyrightOwner: 'Amazon.com, Inc.',
-  authorAddress: 'https://aws.amazon.com',
+  copyrightOwner: 'Court Schuett',
+  authorAddress: 'https://subaud.io',
   devDeps: ['esbuild'],
   projenrcTs: true,
   jest: false,
@@ -45,7 +45,7 @@ project.tsconfigDev.file.addOverride('include', [
 ]);
 
 project.eslint.addOverride({
-  files: ['site/src/**/*.tsx', 'src/resources/**/*.ts'],
+  files: ['src/resources/**/*.ts'],
   rules: {
     'indent': 'off',
     '@typescript-eslint/indent': 'off',
@@ -53,7 +53,7 @@ project.eslint.addOverride({
 });
 
 project.eslint.addOverride({
-  files: ['site/src/**/*.tsx', 'src/resources/**/*.ts'],
+  files: ['src/resources/**/*.ts'],
   rules: {
     '@typescript-eslint/no-require-imports': 'off',
     'import/no-extraneous-dependencies': 'off',

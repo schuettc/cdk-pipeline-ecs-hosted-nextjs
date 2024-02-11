@@ -7,13 +7,13 @@ import {
 } from 'aws-cdk-lib/pipelines';
 import { Construct } from 'constructs';
 import { config } from 'dotenv';
-import { BlogStage, BlogProps } from '.';
+import { NextJSAppStage, NextJSAppProps } from '.';
 
 config();
 
 interface PipelineProps extends StackProps {
   logLevel: string;
-  domainName?: string;
+  domainName: string;
   connectionArn?: string;
   githubRepo?: string;
   githubBranch?: string;
@@ -65,7 +65,9 @@ export class Pipeline extends Stack {
       dockerEnabledForSynth: true,
     });
 
-    pipeline.addStage(new BlogStage(this, 'Blog', props as BlogProps));
+    pipeline.addStage(
+      new NextJSAppStage(this, 'NextJSApp', props as NextJSAppProps),
+    );
   }
 }
 
@@ -84,7 +86,7 @@ const stackProps = {
 
 const app = new App();
 
-new Pipeline(app, 'BlogPipeline', {
+new Pipeline(app, 'NextJSAppPipeline', {
   ...stackProps,
   env: devEnv,
 });

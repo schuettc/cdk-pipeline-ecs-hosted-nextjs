@@ -35,7 +35,7 @@ export class ECSResources extends Construct {
 
     const cluster = new Cluster(this, 'Cluster', {
       vpc: props.vpc,
-      clusterName: 'blog',
+      clusterName: 'nextJsApp',
     });
 
     this.applicationLoadBalancer = new ApplicationLoadBalancer(
@@ -58,12 +58,12 @@ export class ECSResources extends Construct {
       },
     });
 
-    ecsTask.addContainer('BlogContainer', {
+    ecsTask.addContainer('NextJsContainer', {
       image: ContainerImage.fromAsset('nextjs-docker'),
-      containerName: 'blog',
+      containerName: 'nextJsApp',
       portMappings: [{ containerPort: 3000, hostPort: 3000 }],
       logging: LogDrivers.awsLogs({
-        streamPrefix: 'blog',
+        streamPrefix: 'nextJsApp',
       }),
       environment: {},
     });
@@ -72,7 +72,7 @@ export class ECSResources extends Construct {
       vpc: props.vpc,
     });
 
-    this.fargateService = new FargateService(this, 'blogFargateService', {
+    this.fargateService = new FargateService(this, 'nextJsAppFargateService', {
       cluster: cluster,
       taskDefinition: ecsTask,
       assignPublicIp: true,
@@ -89,7 +89,7 @@ export class ECSResources extends Construct {
 
     const fargateTargetGroup = new ApplicationTargetGroup(
       this,
-      'blogTargetGroup',
+      'nextJsAppTargetGroup',
       {
         vpc: props.vpc,
         port: 3000,

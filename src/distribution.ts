@@ -32,10 +32,7 @@ import {
   IHostedZone,
   RecordTarget,
 } from 'aws-cdk-lib/aws-route53';
-import {
-  CloudFrontTarget,
-  Route53RecordTarget,
-} from 'aws-cdk-lib/aws-route53-targets';
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { Provider } from 'aws-cdk-lib/custom-resources';
 import { Construct } from 'constructs';
 
@@ -78,8 +75,8 @@ export class DistributionResources extends Construct {
         allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
       },
-      domainNames: props.domainName ? [props.domainName] : undefined, // Conditionally set domain names
-      certificate: certificate, // Use certificate if available
+      domainNames: props.domainName ? [props.domainName] : undefined,
+      certificate: certificate,
       priceClass: PriceClass.PRICE_CLASS_100,
     });
 
@@ -89,82 +86,76 @@ export class DistributionResources extends Construct {
         target: RecordTarget.fromAlias(new CloudFrontTarget(this.distribution)),
       });
 
-      const mainARecord = new ARecord(this, 'mainARecord', {
+      new ARecord(this, 'mainARecord', {
         zone: hostedZone,
         target: RecordTarget.fromAlias(new CloudFrontTarget(this.distribution)),
       });
-
-      new ARecord(this, 'wwwARecord', {
-        zone: hostedZone,
-        recordName: 'www',
-        target: RecordTarget.fromAlias(new Route53RecordTarget(mainARecord)),
-      });
-
-      const customHeaderLambdaRole = new Role(this, 'customHeaderLambdaRole', {
-        assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-        inlinePolicies: {
-          ['cloudFrontPolicy']: new PolicyDocument({
-            statements: [
-              new PolicyStatement({
-                resources: [
-                  `arn:aws:cloudfront::${Stack.of(this).account}:distribution/${
-                    this.distribution.distributionId
-                  }`,
-                ],
-                actions: [
-                  'cloudfront:GetDistribution',
-                  'cloudfront:UpdateDistribution',
-                ],
-              }),
-            ],
-          }),
-        },
-        managedPolicies: [
-          ManagedPolicy.fromAwsManagedPolicyName(
-            'service-role/AWSLambdaBasicExecutionRole',
-          ),
-        ],
-      });
-
-      const customHeaderCustomResourceLambda = new NodejsFunction(
-        this,
-        'customHeaderCustomResourceLambda',
-        {
-          handler: 'index.handler',
-          entry: 'src/resources/customHeader/index.ts',
-          architecture: Architecture.ARM_64,
-          timeout: Duration.minutes(1),
-          runtime: Runtime.NODEJS_LATEST,
-          role: customHeaderLambdaRole,
-        },
-      );
-
-      const customHeaderCustomResourceProvider = new Provider(
-        this,
-        'customHeaderCustomResourceProvider',
-        {
-          onEventHandler: customHeaderCustomResourceLambda,
-          logRetention: RetentionDays.ONE_WEEK,
-        },
-      );
-
-      new CustomResource(this, 'customHeaderCustomResource', {
-        serviceToken: customHeaderCustomResourceProvider.serviceToken,
-        properties: {
-          DistributionId: this.distribution.distributionId,
-          Origins: [
-            {
-              OriginId: 'default-origin',
-              CustomHeaders: [
-                {
-                  HeaderName: props.customHeader,
-                  HeaderValue: props.randomString,
-                },
-              ],
-            },
-          ],
-        },
-      });
     }
+
+    const customHeaderLambdaRole = new Role(this, 'customHeaderLambdaRole', {
+      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+      inlinePolicies: {
+        ['cloudFrontPolicy']: new PolicyDocument({
+          statements: [
+            new PolicyStatement({
+              resources: [
+                `arn:aws:cloudfront::${Stack.of(this).account}:distribution/${
+                  this.distribution.distributionId
+                }`,
+              ],
+              actions: [
+                'cloudfront:GetDistribution',
+                'cloudfront:UpdateDistribution',
+              ],
+            }),
+          ],
+        }),
+      },
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName(
+          'service-role/AWSLambdaBasicExecutionRole',
+        ),
+      ],
+    });
+
+    const customHeaderCustomResourceLambda = new NodejsFunction(
+      this,
+      'customHeaderCustomResourceLambda',
+      {
+        handler: 'index.handler',
+        entry: 'src/resources/customHeader/index.ts',
+        architecture: Architecture.ARM_64,
+        timeout: Duration.minutes(1),
+        runtime: Runtime.NODEJS_LATEST,
+        role: customHeaderLambdaRole,
+      },
+    );
+
+    const customHeaderCustomResourceProvider = new Provider(
+      this,
+      'customHeaderCustomResourceProvider',
+      {
+        onEventHandler: customHeaderCustomResourceLambda,
+        logRetention: RetentionDays.ONE_WEEK,
+      },
+    );
+
+    new CustomResource(this, 'customHeaderCustomResource', {
+      serviceToken: customHeaderCustomResourceProvider.serviceToken,
+      properties: {
+        DistributionId: this.distribution.distributionId,
+        Origins: [
+          {
+            OriginId: 'default-origin',
+            CustomHeaders: [
+              {
+                HeaderName: props.customHeader,
+                HeaderValue: props.randomString,
+              },
+            ],
+          },
+        ],
+      },
+    });
   }
 }

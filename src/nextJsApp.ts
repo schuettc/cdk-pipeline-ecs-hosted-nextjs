@@ -1,22 +1,22 @@
 import { randomBytes } from 'crypto';
-import { StackProps, Stage, Stack } from 'aws-cdk-lib';
+import { StackProps, Stage, Stack, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { ECSResources, VPCResources, DistributionResources } from '.';
 
-export interface BlogProps extends StackProps {
+export interface NextJSAppProps extends StackProps {
   logLevel: string;
   domainName: string;
 }
 
-export class BlogStage extends Stage {
-  constructor(scope: Construct, id: string, props: BlogProps) {
+export class NextJSAppStage extends Stage {
+  constructor(scope: Construct, id: string, props: NextJSAppProps) {
     super(scope, id, props);
-    new BlogStack(this, 'Resources', props);
+    new NextJSAppStack(this, 'Resources', props);
   }
 }
 
-class BlogStack extends Stack {
-  constructor(scope: Construct, id: string, props: BlogProps) {
+class NextJSAppStack extends Stack {
+  constructor(scope: Construct, id: string, props: NextJSAppProps) {
     super(scope, id, props);
     const randomString = generateRandomString(12);
     const customHeader = 'X-From-CloudFront';
@@ -31,11 +31,19 @@ class BlogStack extends Stack {
       randomString: randomString,
     });
 
-    new DistributionResources(this, 'DistributionResources', {
-      applicationLoadBalancer: ecsResources.applicationLoadBalancer,
-      customHeader: customHeader,
-      randomString: randomString,
-      domainName: props.domainName,
+    const distribution = new DistributionResources(
+      this,
+      'DistributionResources',
+      {
+        applicationLoadBalancer: ecsResources.applicationLoadBalancer,
+        customHeader: customHeader,
+        randomString: randomString,
+        domainName: props.domainName,
+      },
+    );
+
+    new CfnOutput(this, 'distributionDomain', {
+      value: distribution.distribution.domainName,
     });
   }
 }
