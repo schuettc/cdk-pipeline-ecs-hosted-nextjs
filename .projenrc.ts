@@ -67,6 +67,7 @@ const common_exclude = [
   'dependabot.yml',
   '.DS_Store',
   '**/dist/**',
+  '.env',
   'config.json',
 ];
 

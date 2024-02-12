@@ -53,5 +53,6 @@ yarn-error.log
 dependabot.yml
 .DS_Store
 **/dist/**
+.env
 config.json
 !/.projenrc.ts
