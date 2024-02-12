@@ -13,7 +13,7 @@ In each of these examples, we will look at several different mechanisms to provi
 
 This demo uses [AWS CodeStar Connections](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create-github.html) to create a link to a GitHub repo. This will allow us to use GitHub commits to push changes to our NextJS App through the CDK Pipeline.
 
-The [src/cdk-pipeline-ecs-hosted-nextjs.ts](cdk-pipeline-ecs-hosted-nextjs.ts) file will create a Stack with a self-mutating CodePipeline. This is the Pipeline contains a Stage that will deploy the the NextJSApp Stack. This Pipeline is triggered by the GitHub repo and branch associated.
+The [/src/cdk-pipeline-ecs-hosted-nextjs.ts](cdk-pipeline-ecs-hosted-nextjs.ts) file will create a Stack with a self-mutating CodePipeline. This is the Pipeline contains a Stage that will deploy the the NextJSApp Stack. This Pipeline is triggered by the GitHub repo and branch associated.
 
 ```typescript
 const pipeline = new CodePipeline(this, 'Pipeline', {
@@ -119,7 +119,7 @@ This Listener will by default reject all traffic that is sent to it. An addition
 
 The result:
 
-![Listener](/images//Listener.png)
+![Listener](/images/Listener.png)
 
 ### Cloudfront
 
