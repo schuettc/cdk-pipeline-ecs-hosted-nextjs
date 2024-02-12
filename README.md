@@ -9,11 +9,11 @@ In each of these examples, we will look at several different mechanisms to provi
 
 ## CDK Pipeline
 
-![CDKPipelineOverview](/images//CDKPipelineOverview.png)
+![CDKPipelineOverview](/images/CDKPipelineOverview.png)
 
 This demo uses [AWS CodeStar Connections](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create-github.html) to create a link to a GitHub repo. This will allow us to use GitHub commits to push changes to our NextJS App through the CDK Pipeline.
 
-The [/src/cdk-pipeline-ecs-hosted-nextjs.ts](cdk-pipeline-ecs-hosted-nextjs.ts) file will create a Stack with a self-mutating CodePipeline. This is the Pipeline contains a Stage that will deploy the the NextJSApp Stack. This Pipeline is triggered by the GitHub repo and branch associated.
+The [cdk-pipeline-ecs-hosted-nextjs.ts](/src/cdk-pipeline-ecs-hosted-nextjs.ts) file will create a Stack with a self-mutating CodePipeline. This is the Pipeline contains a Stage that will deploy the the NextJSApp Stack. This Pipeline is triggered by the GitHub repo and branch associated.
 
 ```typescript
 const pipeline = new CodePipeline(this, 'Pipeline', {
@@ -80,7 +80,7 @@ const fargateTargetGroup = new ApplicationTargetGroup(
 
 When configuring the `ApplicationTargetGroup` that points to the Fargate application, a Security Group will be created that allows traffic from the Application Load Balancer to access the Fargate task.
 
-![FargateSecurityGroup](/images//FargateSecurityGroup.png)
+![FargateSecurityGroup](/images/FargateSecurityGroup.png)
 
 This Security Group will use the Security Group of the Application Load Balancer.
 
@@ -200,7 +200,7 @@ new CustomResource(this, 'customHeaderCustomResource', {
 
 The result will look something like this:
 
-![Origin](/images//Origin.png)
+![Origin](/images/Origin.png)
 
 ### Fargate Task
 
